@@ -165,7 +165,7 @@ Therefore, once the game is complete: No additional moves are allowed. Undo is u
 The recorded scoreboard result remains final.
 
 ### Agreed Engineering Assumptions
-The following assumptions are explicitly recorded in the README.
+The following assumptions are explicitly recorded.
 | ID | Assumption-Decisions | Rationale |
 |---|---|---|
 | AS-01 | `Use Option A: disable Undo after completion` | `Simplifies scoreboard consistency` |
