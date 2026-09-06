@@ -1,0 +1,36 @@
+<main>
+  <header><a class="brand" href="/" aria-label="Tic Tac Toe home"><span class="brand-icon">×<b>○</b></span> PLAY / SIMPLE</a><span class="session"><i></i> LOCAL SESSION</span></header>
+  <section class="intro"><span class="eyebrow">THE CLASSIC, REPLAYED.</span><h1>A little friendly <em>rivalry.</em></h1><p>Nine squares. Two players. One more round.</p></section>
+  <div class="layout">
+    <section class="play-card" aria-label="Game">
+      <div class="game-top"><h2>Tic Tac Toe</h2><span class="small-label">3 × 3 / CLASSIC</span></div>
+      <div class="mode-picker" aria-label="Game mode"><button [class.active]="selected()==='TwoPlayer'" [attr.aria-pressed]="selected()==='TwoPlayer'" [disabled]="busy()" (click)="newGame('TwoPlayer')">Two players</button><button [class.active]="selected()==='Computer'" [attr.aria-pressed]="selected()==='Computer'" [disabled]="busy()" (click)="newGame('Computer')">Vs. computer</button></div>
+      <div class="status" role="status" aria-live="polite">
+        @if(game(); as g) {
+          @if(g.status==='Won') { <span class="turn-mark" [class.o]="g.winner==='O'">{{g.winner}}</span><div><strong>{{g.winner}} takes the round!</strong><small>A winning line. Well played.</small></div> }
+          @else if(g.status==='Draw') { <span class="turn-mark draw">=</span><div><strong>Perfectly matched.</strong><small>It's a draw. Ready for a rematch?</small></div> }
+          @else { <span class="turn-mark" [class.o]="g.currentPlayer==='O'">{{g.currentPlayer}}</span><div><strong>{{busy() ? 'Updating the board…' : g.currentPlayer + ', your move.'}}</strong><small>{{g.mode==='Computer' ? 'You are X. The computer plays O.' : 'Pick an empty square to play.'}}</small></div> }
+        } @else { <strong>{{busy() ? 'Setting up your board…' : 'Start a game to play.'}}</strong> }
+      </div>
+      <div class="board" aria-label="Tic Tac Toe board" [attr.aria-busy]="busy()">
+        @for(row of game()?.board ?? [[null,null,null],[null,null,null],[null,null,null]]; track $index; let r=$index) {
+          @for(cell of row; track $index; let c=$index) {
+            <button class="cell" [class.x]="cell==='X'" [class.o]="cell==='O'" [class.win]="winning(r,c)" [attr.aria-label]="'Row '+(r+1)+', column '+(c+1)+': '+(cell ?? 'empty')" [disabled]="busy() || !game() || !!cell || game()?.status!=='InProgress'" (click)="move(r,c)">{{cell === 'X' ? '×' : cell === 'O' ? '○' : ''}}</button>
+          }
+        }
+      </div>
+      <div class="controls"><button class="secondary" [disabled]="busy() || !game()?.moveHistory?.length || game()?.status!=='InProgress'" (click)="undo()">↶ &nbsp; Undo move</button><button class="primary" [disabled]="busy()" (click)="reset()">↻ &nbsp; Reset game</button></div>
+      <p class="board-note">{{game()?.mode==='Computer' ? 'Undo takes back your move and the computer’s reply.' : 'Pass the turn. Keep the competition friendly.'}}</p>
+      @if(error()) { <div class="error" role="alert">{{error()}} <button [disabled]="busy()" (click)="newGame(selected())">Start a new game</button></div> }
+    </section>
+    <aside>
+      <section class="score-card"><div class="section-heading"><h2>The scoreboard</h2><span class="small-label">THIS SESSION</span></div><div class="scores"><div class="x-score"><span>X WINS</span><strong>{{score().xWins}}</strong></div><div><span>DRAWS</span><strong>{{score().draws}}</strong></div><div class="o-score"><span>O WINS</span><strong>{{score().oWins}}</strong></div></div><div class="score-foot"><span>Every round counts.</span><button [disabled]="busy()" (click)="resetScores()">Reset scores ↗</button></div></section>
+      <section class="history-card"><div class="section-heading"><h2>Move by move</h2><span class="count">{{game()?.moveHistory?.length ?? 0}}</span></div>
+        @if(game()?.moveHistory?.length) { <ol class="history">@for(move of game()!.moveHistory; track move.moveNumber) { <li><span class="move-number">{{move.moveNumber.toString().padStart(2,'0')}}</span><span class="history-mark" [class.o]="move.player==='O'">{{move.player}}</span><span>Row {{move.row+1}}, column {{move.column+1}}</span><small>{{move.player==='O' && game()?.mode==='Computer' ? 'COMPUTER' : 'PLAYER '+move.player}}</small></li> }</ol> }
+        @else { <div class="empty-history"><span>⌗</span><strong>A fresh start.</strong><p>Your moves will appear here.<br>Make the first one count.</p></div> }
+      </section>
+      <div class="howto"><span>01 — THE OBJECTIVE</span><p>Three in a row. Any direction.<br><b>Simple rules. Endless rematches.</b></p></div>
+    </aside>
+  </div>
+  <footer><span>A small game. A good break.</span><span>X STARTS · WIN, DRAW, REPEAT</span></footer>
+</main>

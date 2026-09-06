@@ -1,0 +1,12 @@
+.tools/
+.pnpm-store/
+frontend/.angular/
+.run/
+node_modules/
+frontend/dist/
+backend/**/bin/
+backend/**/obj/
+backend/TicTacToe.Api/wwwroot/
+*.pdf.txt
+dotnet-install.ps1
+*.log
